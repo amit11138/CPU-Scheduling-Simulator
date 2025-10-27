@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CPU Scheduling Simulator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .gantt-chart-container svg {
+            width: 100%;
+            height: auto;
+        }
+    </style>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body class="bg-gray-900 text-gray-200 font-sans leading-normal tracking-normal">
+
+    <div id="home-section" class="container mx-auto p-4 lg:p-8 flex flex-col items-center justify-center min-h-screen text-center">
+        <div class="max-w-3xl">
+            <h1 class="text-5xl md:text-6xl font-extrabold text-white mb-4 leading-tight animate-fade-in-down">
+                CPU Scheduling Algorithms
+            </h1>
+            <p class="text-xl text-gray-300 mb-8 max-w-2xl mx-auto animate-fade-in-up">
+                An interactive tool to visualize and understand how different CPU scheduling algorithms like FCFS, SJF, and Priority work. Compare their performance and test your knowledge.
+            </p>
+            <button id="enter-simulator" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg text-lg transition-transform transform hover:scale-105 duration-300">
+                Start Simulation
+            </button>
+        </div>
+    </div>
+
+    <div id="simulator-section" class="container mx-auto p-4 lg:p-8 hidden">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-white">CPU Scheduling Algorithm Simulator</h1>
+            <p class="text-lg text-gray-400 mt-2">An interactive way to learn and visualize CPU scheduling.</p>
+        </header>
+
+        <nav class="bg-gray-800 rounded-lg shadow-md mb-8">
+            <ul class="flex justify-center items-center p-4 space-x-4 md:space-x-8" id="nav-links">
+                <li><a href="#intro" class="nav-link font-semibold text-blue-400 border-b-2 border-blue-400 pb-2">Introduction</a></li>
+                <li><a href="#fcfs" class="nav-link font-medium text-gray-400 hover:text-blue-400 transition-colors duration-300">FCFS</a></li>
+                <li><a href="#sjf" class="nav-link font-medium text-gray-400 hover:text-blue-400 transition-colors duration-300">SJF</a></li>
+                <li><a href="#priority" class="nav-link font-medium text-gray-400 hover:text-blue-400 transition-colors duration-300">Priority</a></li>
+                <li><a href="#comparison" class="nav-link font-medium text-gray-400 hover:text-blue-400 transition-colors duration-300">Comparison</a></li>
+                <li><a href="#quiz" class="nav-link font-medium text-gray-400 hover:text-blue-400 transition-colors duration-300">Quiz</a></li>
+            </ul>
+        </nav>
+
+        <main id="app-content">
+            <!-- Introduction Section -->
+            <section id="intro" class="app-section bg-gray-800 rounded-lg shadow-md p-6 mb-8">
+                <h2 class="text-2xl font-bold mb-4">Introduction to CPU Scheduling</h2>
+                <p class="mb-4">CPU scheduling is the process by which a CPU decides which of the processes in the ready queue is to be allocated to the CPU. Below is the default set of processes and a Gantt chart illustrating the FCFS algorithm.</p>
+                <div class="mt-6 grid md:grid-cols-2 gap-8">
+                    <div>
+                         <h3 class="text-xl font-semibold mb-2">Process Queue</h3>
+                         <div id="intro-process-table" class="overflow-x-auto"></div>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold mb-2">FCFS Example Gantt Chart</h3>
+                        <div id="intro-gantt-chart" class="gantt-chart-container bg-gray-700 rounded p-2"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- FCFS Section -->
+            <section id="fcfs" class="app-section bg-gray-800 rounded-lg shadow-md p-6 mb-8 hidden">
+                <h2 class="text-2xl font-bold mb-2">First Come, First Served (FCFS)</h2>
+                <p class="mb-4">The first process to arrive is the first to be executed. Simple and fair, but can lead to long waiting times for short processes stuck behind long ones (the "convoy effect").</p>
+                <button id="run-fcfs" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition-transform transform hover:scale-105 duration-300">Run FCFS Simulation</button>
+                <div id="fcfs-results" class="mt-6 hidden">
+                    <h3 class="text-xl font-semibold mb-2">Gantt Chart</h3>
+                    <div id="fcfs-gantt-chart" class="gantt-chart-container bg-gray-700 rounded p-2"></div>
+                    <h3 class="text-xl font-semibold mt-4 mb-2">Performance Metrics</h3>
+                    <div id="fcfs-metrics" class="grid grid-cols-2 gap-4"></div>
+                </div>
+            </section>
+
+            <!-- SJF Section -->
+            <section id="sjf" class="app-section bg-gray-800 rounded-lg shadow-md p-6 mb-8 hidden">
+                <h2 class="text-2xl font-bold mb-2">Shortest Job First (SJF)</h2>
+                <p class="mb-4">Selects the process with the shortest burst time to execute next. Optimal in minimizing average waiting time, but requires knowing burst times in advance. Change burst times below and see the effect.</p>
+                <div id="sjf-process-table" class="overflow-x-auto mb-4"></div>
+                <button id="run-sjf" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition-transform transform hover:scale-105 duration-300">Run SJF Simulation</button>
+                 <div id="sjf-results" class="mt-6 hidden">
+                    <h3 class="text-xl font-semibold mb-2">Gantt Chart</h3>
+                    <div id="sjf-gantt-chart" class="gantt-chart-container bg-gray-700 rounded p-2"></div>
+                    <h3 class="text-xl font-semibold mt-4 mb-2">Performance Metrics</h3>
+                    <div id="sjf-metrics" class="grid grid-cols-2 gap-4"></div>
+                </div>
+            </section>
+
+            <!-- Priority Section -->
+            <section id="priority" class="app-section bg-gray-800 rounded-lg shadow-md p-6 mb-8 hidden">
+                <h2 class="text-2xl font-bold mb-2">Priority Scheduling</h2>
+                <p class="mb-4">Each process is assigned a priority, and the process with the highest priority (lower number) is executed first. Can lead to "starvation" for low-priority processes.</p>
+                <div id="priority-process-table" class="overflow-x-auto mb-4"></div>
+                <button id="run-priority" class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded transition-transform transform hover:scale-105 duration-300">Run Priority Simulation</button>
+                 <div id="priority-results" class="mt-6 hidden">
+                    <h3 class="text-xl font-semibold mb-2">Gantt Chart</h3>
+                    <div id="priority-gantt-chart" class="gantt-chart-container bg-gray-700 rounded p-2"></div>
+                    <h3 class="text-xl font-semibold mt-4 mb-2">Performance Metrics</h3>
+                    <div id="priority-metrics" class="grid grid-cols-2 gap-4"></div>
+                </div>
+            </section>
+
+            <!-- Comparison Section -->
+            <section id="comparison" class="app-section bg-gray-800 rounded-lg shadow-md p-6 mb-8 hidden">
+                <h2 class="text-2xl font-bold mb-4">Algorithm Comparison</h2>
+                <p class="mb-4">Here's a side-by-side comparison of the algorithms. Run each simulation to populate the data.</p>
+                <div class="grid lg:grid-cols-2 gap-8">
+                    <div id="comparison-table" class="overflow-x-auto"></div>
+                    <div class="bg-gray-700 p-4 rounded-lg">
+                        <canvas id="comparison-chart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section id="quiz" class="app-section bg-gray-800 rounded-lg shadow-md p-6 mb-8 hidden">
+                <h2 class="text-2xl font-bold mb-4">Test Your Knowledge!</h2>
+                <p class="mb-4">A new set of questions is generated each time you visit this section.</p>
+                <form id="quiz-form"></form>
+                <div id="quiz-results" class="mt-4 p-4 rounded-lg bg-gray-700"></div>
+            </section>
+        </main>
+    </div>
+
+    <script type="module" src="index.tsx"></script>
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>

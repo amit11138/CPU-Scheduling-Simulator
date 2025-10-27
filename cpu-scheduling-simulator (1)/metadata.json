@@ -1,0 +1,5 @@
+{
+  "name": "CPU Scheduling Simulator",
+  "description": "An interactive and educational tool to learn and compare CPU scheduling algorithms like FCFS, SJF, and Priority Scheduling.",
+  "requestFramePermissions": []
+}
